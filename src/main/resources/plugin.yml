@@ -1,0 +1,7 @@
+name: S4CT
+version: 1.0.0
+author: Noah Greff
+main: me.noahgreff.s4ct.Main
+api-version: 1.19
+
+commands:
