@@ -1,3 +1,5 @@
+int value = 0;
+
 void setup()
 {
     Serial.begin(9600);
@@ -5,6 +7,13 @@ void setup()
 
 void loop()
 {
-    Serial.println("hello arduino 2333333333333");
-    delay(1000);
+    Serial.println(analogRead(0));
+
+    // int sensorValue = analogRead(0);
+
+    // if (sensorValue > value + 1 || sensorValue < value - 1)
+    // {
+    // value = sensorValue;
+    // Serial.println(value);
+    // }
 }
