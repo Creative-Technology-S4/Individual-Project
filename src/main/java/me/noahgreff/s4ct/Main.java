@@ -44,7 +44,7 @@ public class Main extends JavaPlugin {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        }, 0, 20);
+        }, 0, 1);
     }
 
     @Override
