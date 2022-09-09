@@ -35,6 +35,7 @@
             "includePath": [
                 "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\cores\\arduino",
                 "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\variants\\standard",
+                "C:\\Users\\greff\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
                 "c:\\program files\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include",
                 "c:\\program files\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include-fixed",
                 "c:\\program files\\arduino\\hardware\\tools\\avr\\avr\\include"
