@@ -67,6 +67,6 @@ public class Main extends JavaPlugin {
             long time = (long) Math.clampedMap(VALUE.get(), 0, 1023, 0, 24000);
             Optional.ofNullable(Bukkit.getWorld("world")).ifPresent(world -> world.setTime(time));
 //            System.out.println(time);
-        }, 0, 20);
+        }, 0, 1);
     }
 }

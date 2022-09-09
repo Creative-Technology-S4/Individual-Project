@@ -18,5 +18,5 @@ void loop()
         Serial.print(START_DELIMITER + String(value) + END_DELIMITER);
     }
 
-    delay(100);
+    delay(50);
 }
