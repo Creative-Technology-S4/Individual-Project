@@ -1,17 +1,14 @@
 package me.noahgreff.s4ct;
 
 import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
 import me.noahgreff.s4ct.util.Math;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-@SuppressWarnings({"StatementWithEmptyBody"})
+@SuppressWarnings({"StatementWithEmptyBody", "unused"})
 public class Main extends JavaPlugin {
 
     private static final String COM_PORT = "COM3";
@@ -27,41 +24,9 @@ public class Main extends JavaPlugin {
 
         while (!port.openPort()) { } // continuously attempt to open port
 
-        port.addDataListener(new SerialPortDataListener() {
-            private static final String START_DELIMITER = "[";
-            private static final String END_DELIMITER = "]";
-
-            private String partialData = "";
-
-            @Override
-            public int getListeningEvents() {
-                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
-            }
-
-            @Override
-            public void serialEvent(SerialPortEvent event) {
-                String raw = new String(event.getReceivedData(), StandardCharsets.UTF_8)
-                        .replaceAll("\\n", "")
-                        .replaceAll("\\r", "")
-                        .trim();
-
-                if (raw.contains(START_DELIMITER)) {
-                    partialData = raw;
-                } else if (raw.contains(END_DELIMITER)) {
-                    String full = (partialData + raw)
-                            .replace(START_DELIMITER, "")
-                            .replace(END_DELIMITER, "");
-
-                    if (full.isEmpty() || full.isBlank()) return; // sometimes string data is empty
-
-                    try {
-                        VALUE.set(Integer.parseInt(full));
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            }
-        });
+        SerialPortJsonReader reader = new SerialPortJsonReader(SerialPort.LISTENING_EVENT_DATA_RECEIVED);
+        reader.addListener(jsonObject -> Optional.of(jsonObject.get("value")).ifPresent(value -> VALUE.set(value.getAsInt())));
+        port.addDataListener(reader);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             long time = (long) Math.clampedMap(VALUE.get(), 0, 1023, 0, 24000);
