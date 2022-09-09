@@ -18,9 +18,6 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         SerialPort port = SerialPort.getCommPort(COM_PORT);
-        port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0 /* 1000 */, 0);
-        port.setComPortParameters(BAUD_RATE, 8, SerialPort.ONE_POINT_FIVE_STOP_BITS, SerialPort.NO_PARITY);
-
         while (!port.openPort()) { } // continuously attempt to open port
 
         SerialPortJsonReader reader = new SerialPortJsonReader(SerialPort.LISTENING_EVENT_DATA_RECEIVED);
