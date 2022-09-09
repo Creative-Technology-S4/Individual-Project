@@ -1,7 +1,6 @@
 package me.noahgreff.s4ct;
 
 import com.fazecast.jSerialComm.SerialPort;
-import me.noahgreff.s4ct.util.Math;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,8 +28,7 @@ public class Main extends JavaPlugin {
         port.addDataListener(reader);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            long time = (long) Math.clampedMap(VALUE.get(), 0, 1023, 0, 24000);
-            Optional.ofNullable(Bukkit.getWorld("world")).ifPresent(world -> world.setTime(time));
+            Optional.ofNullable(Bukkit.getWorld("world")).ifPresent(world -> world.setTime((long) VALUE.get()));
 //            System.out.println(time);
         }, 0, 1);
     }

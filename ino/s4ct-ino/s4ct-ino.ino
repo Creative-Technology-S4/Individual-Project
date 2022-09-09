@@ -20,7 +20,7 @@ void loop()
         value = sensorValue;
 
         JsonObject root = doc.to<JsonObject>();
-        root["value"] = value;
+        root["value"] = map(value, 0, 1023, 0, 24000);
         sendJson(root);
     }
 
