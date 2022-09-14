@@ -13,17 +13,17 @@ void setup()
 void loop()
 {
     DynamicJsonDocument doc(1024);
-    int sensorValue = analogRead(0);
+    JsonObject root = doc.to<JsonObject>();
 
+    // world time
+    int sensorValue = analogRead(0);
     if (sensorValue > value + 1 || sensorValue < value - 1)
     {
         value = sensorValue;
-
-        JsonObject root = doc.to<JsonObject>();
-        root["value"] = map(value, 0, 1023, 0, 24000);
-        sendJson(root);
+        root["time"] = map(value, 0, 1023, 0, 24000);
     }
 
+    sendJson(root);
     delay(50);
 }
 
@@ -32,5 +32,10 @@ void sendJson(JsonObject &json)
     String data = START_DELIMITER;
     serializeJson(json, data);
     data += END_DELIMITER;
-    Serial.println(data);
+
+    // only print if `data` has json
+    if (data.length() > 4)
+    {
+        Serial.println(data);
+    }
 }
