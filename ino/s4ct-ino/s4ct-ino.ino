@@ -1,6 +1,6 @@
-#include <MPU9250.h>
+#include <MPU9250_WE.h>
 
-MPU9250 mpu;
+MPU9250_WE mpu = MPU9250_WE(0x68);
 
 const String START_DELIMITER = "<";
 const String END_DELIMITER = ">";
@@ -10,17 +10,10 @@ int value = 0; // for potentiometer debouncing
 void setup()
 {
     Serial.begin(9600);
-
     Wire.begin();
-    delay(2000);
 
-    mpu.setup(0x68); // change to your own address
-
-    delay(5000);
-
-    // calibrate anytime you want to
-    mpu.calibrateAccelGyro();
-    mpu.calibrateMag();
+    mpu.autoOffsets();
+    mpu.initMagnetometer();
 }
 
 void loop()
@@ -30,17 +23,12 @@ void loop()
     if (sensorValue > value + 1 || sensorValue < value - 1)
     {
         value = sensorValue;
-        // send(toJson("time", String(map(value, 0, 1023, 0, 24000))));
+        send(toJson("time", String(map(value, 0, 1023, 0, 24000))));
     }
 
     // camera angle
-    if (mpu.update())
-    {
-        String x = String(mpu.getRoll());
-        String y = String(mpu.getPitch());
-        String z = String(mpu.getYaw());
-        send(toJson("camera", "[" + x + "," + y + "," + z + "]"));
-    }
+    xyzFloat angle = mpu.getAngles();
+    send(toJson("angle", "[" + String(angle.y) + "," + String(angle.z) + "]"));
 
     delay(50); // the game runs at 20hz
 }
@@ -52,5 +40,5 @@ void send(String raw)
 
 String toJson(String key, String value)
 {
-    return "{\"" + key + "\":\"" + value + "\"}";
+    return "{\"" + key + "\":" + value + "}";
 }
