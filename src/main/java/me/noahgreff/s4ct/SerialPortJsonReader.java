@@ -36,36 +36,37 @@ public class SerialPortJsonReader implements SerialPortDataListener {
 
     @Override
     public void serialEvent(SerialPortEvent event) {
-        String raw = new String(event.getReceivedData(), StandardCharsets.UTF_8)
+        String rawData = new String(event.getReceivedData(), StandardCharsets.UTF_8)
                 .replaceAll("\\n", "")
                 .replaceAll("\\r", "")
                 .trim();
 
-        if (raw.contains(START_DELIMITER)) {
-            partialData = raw;
-        } else if (raw.contains(END_DELIMITER)) {
-            String full = (partialData + raw)
+        if (rawData.contains(START_DELIMITER)) {
+            partialData = rawData;
+        } else if (rawData.contains(END_DELIMITER)) {
+            String completeData = (partialData + rawData)
                     .replace(START_DELIMITER, "")
                     .replace(END_DELIMITER, "");
 
             try {
-                JsonObject jsonObject = JsonParser.parseString(full).getAsJsonObject();
+                JsonObject jsonObject = JsonParser.parseString(completeData).getAsJsonObject();
                 listeners.forEach(consumer -> {
                     try {
                         consumer.accept(jsonObject);
                     } catch (Exception exception) {
-                        System.err.println("An error occurred in a json listener.");
+                        System.err.println("An error occurred in a JSON listener.");
                         exception.printStackTrace(System.err);
                     }
                 });
             } catch (Exception exception) {
                 System.err.println("Error while parsing serial port data to JSON; likely a formatting error.");
+                System.err.println("Is this correct: " + completeData);
                 exception.printStackTrace(System.err);
             } finally {
                 partialData = "";
             }
         } else {
-            partialData += raw;
+            partialData += rawData;
         }
     }
 }
