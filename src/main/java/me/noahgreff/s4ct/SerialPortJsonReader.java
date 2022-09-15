@@ -50,9 +50,17 @@ public class SerialPortJsonReader implements SerialPortDataListener {
 
             try {
                 JsonObject jsonObject = JsonParser.parseString(full).getAsJsonObject();
-                listeners.forEach(consumer -> consumer.accept(jsonObject));
+                listeners.forEach(consumer -> {
+                    try {
+                        consumer.accept(jsonObject);
+                    } catch (Exception exception) {
+                        System.err.println("An error occurred in a json listener.");
+                        exception.printStackTrace(System.err);
+                    }
+                });
             } catch (Exception exception) {
-                exception.printStackTrace();
+                System.err.println("Error while parsing serial port data to JSON; likely a formatting error.");
+                exception.printStackTrace(System.err);
             } finally {
                 partialData = "";
             }
