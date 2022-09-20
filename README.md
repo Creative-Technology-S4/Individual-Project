@@ -1,4 +1,4 @@
-# s4ct-individual
+# Individual-Project
 
 ### Overview
 
